@@ -1,3 +1,7 @@
+
+Go here for detailed description.. http://syllogismos.github.io/facebook-link-prediction/
+
+
 my implementation of supervised random walks algorithm in octave, as described in the paper Supervised Random Walks by Lars Backstorm.. The data I used is from the first facebook kaggle competition..
 
 will update commets and notes soon.. and clear instructions of how to use this code..
