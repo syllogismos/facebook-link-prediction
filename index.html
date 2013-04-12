@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Link Prediction (Supervised Random Walks) by syllogismos</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Link Prediction (Supervised Random Walks)</h1>
+        <p>Predicting and recommending links in a Social Network.</p>
+
+        <p class="view"><a href="https://github.com/syllogismos/facebook-link-prediction">View the Project on GitHub <small>syllogismos/facebook-link-prediction</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/syllogismos/facebook-link-prediction/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/syllogismos/facebook-link-prediction/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/syllogismos/facebook-link-prediction">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Link Prediction:</h1>
+
+<pre><code>We are given snapshot of a network and would like to infer which which interactions among existing
+</code></pre>
+
+<p>members are likely to occur in the near future or which existing interactions are we missing. The challenge is to effectively combine the information from the network structure with rich node and edge
+attribute data.</p>
+
+<h1>Supervised Random Walks:</h1>
+
+<pre><code>This repository is the implementation of Link prediction based on the paper Supervised Random Walks by  Lars Backstrom et al. The essence of which is that we combine the information from the network structure with the node and edge level attributes using Supervised Random Walks. We achieve this by using these attributes to guide a random walk on the graph. We formulate a supervised learning task where the goal is to learn a function that assigns strengths to edges in the network such that a random walker is more likely to visit the nodes to which new links will be created in the future. We develop an efficient training algorithm to directly learn the edge strength estimation function.
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
