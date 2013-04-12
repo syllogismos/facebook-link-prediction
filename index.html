@@ -188,25 +188,25 @@ Here we explain how each helper function and main functions implements the above
 I'm not showing how to obtain the edge features given the network structure, node and edge attributes etc, you can experiment with different feature extraction techniques.
 Here we have <em>psi</em></p>
 
-<pre><code>$ clear, close all, clc;
-$ rand("seed", 3410);
-$ m = size(psi)(3);
-$ n = size(psi)(1);
-$ initial_w = zeroes(1,m);   % initialize the parameters to zeros or rand
-$ initial_w = rand(1,n);
+<pre><code>octave:1&gt; clear, close all, clc;
+octave:2&gt; rand("seed", 3410);
+octave:3&gt; m = size(psi)(3);
+octave:4&gt; n = size(psi)(1);
+octave:5&gt; initial_w = zeroes(1,m);   % initialize the parameters to zeros or rand
+octave:6&gt; initial_w = rand(1,n);
 
 to calculate the loss for a given parameter vector.
-$ [loss, grad] = LossFunction(initial_w, psi, d, lambda=1, alpha=0.2, b=0.4);
+octave:7&gt; [loss, grad] = LossFunction(initial_w, psi, d, lambda=1, alpha=0.2, b=0.4);
 d above is a binary vector that represents the destination nodes to begin with, you can initialize this randomly or obtain it from the graph
 
 training
-$ options = optimset('GradObj', 'on', 'MaxIter', 20);
-$ [w,loss] = ...
+octave:8&gt; options = optimset('GradObj', 'on', 'MaxIter', 20);
+octave:9&gt; [w,loss] = ...
     fmincg(@(t)(LossFunction(t, psi, d, lambda=1,alpha=0.2,b=0.4)),
     initial_w, options);
 w obtained above is the parameters we obtained after gradient descent
-$ y = 10;
-$ [nodes, P] = GetNodesFromParam(w, psi,d,alpha = 0.2,y)
+octave:10&gt; y = 10;
+octave:11&gt; [nodes, P] = GetNodesFromParam(w, psi,d,alpha = 0.2,y);
 </code></pre>
       </section>
       <footer>
