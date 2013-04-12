@@ -143,11 +143,11 @@ Here we explain how each helper function and main functions implements the above
 
 <ul>
 <li>We get edge strength matrix and its partial derivatives from features and parameters</li>
-<li>We get transition probability and partial derivatives of it from A and dA</li>
+<li>We get transition probability and partial derivatives of it from <em>A</em> and <em>dA</em>
+</li>
 <li>We get stationary probabilities from <em>Q</em> and <em>dQ</em>
 </li>
-<li>Compute cost and gradient from the above variables, we can use various functions as loss function <em>h(.)</em>
-</li>
+<li>Compute cost and gradient from the above variables, we can use various functions as loss function <em>h(.)</em>. Here we used wilcoxon loss function.</li>
 </ul><p>arguments:</p>
 
 <ul>
@@ -161,7 +161,28 @@ Here we explain how each helper function and main functions implements the above
 <ul>
 <li>J: loss, size(1,1)</li>
 <li>grad: gradient of cost wrt parameters, size(1,m)</li>
-</ul>
+</ul><h3>fmincg.m</h3>
+
+<p>We use this function to do the minimization of the loss function, given a starting point for the parameters, and the function that computes loss and gradients for a given parameter vector. This is similar to fminunc function available in octave.</p>
+
+<h3>GetNodesFromParam.m</h3>
+
+<p>This function calculates the closest nodes to the root node given the parameters obtained after training.</p>
+
+<p>arguments:</p>
+
+<ul>
+<li>param: parameters, size(m,1) </li>
+<li>features: feature matrix, size(n,n,m)</li>
+<li>d: binary vector representing the destination nodes, size(1,n)</li>
+<li>alpha: alpha value used in calculation of Q, size(1,1)</li>
+<li>y: number of nodes to output</li>
+</ul><p>returns:</p>
+
+<ul>
+<li>nodes: output nodes, size(1,y)</li>
+<li>P: probabilities of the nodes, size(1,n)</li>
+</ul><h1>How to Train:</h1>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
