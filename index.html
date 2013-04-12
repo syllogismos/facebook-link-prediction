@@ -86,45 +86,62 @@ Here we explain how each helper function and main functions implements the above
 
 <h3>FeaturesFromAdjacentMatrix.m:</h3>
 
-<p>This is a temporary function specific to the facebook data that generates Features of each edge from a given adjacency matrix. For other problems this function must be replaced with something that generates feature vector for each edge based on graph <em>G(E,V)</em> and node, edge attributes. For an network with <em>n</em> nodes this function returns <em>n x n x m</em> matrix, where <em>m</em> is the size of parameter vector <em>w</em>(sometimes <em>m+1</em>)
-arguments:</p>
+<p>This is a temporary function specific to the facebook data that generates Features of each edge from a given adjacency matrix. For other problems this function must be replaced with something that generates feature vector for each edge based on graph <em>G(E,V)</em> and node, edge attributes. For an network with <em>n</em> nodes this function returns <em>n x n x m</em> matrix, where <em>m</em> is the size of parameter vector <em>w</em>(sometimes <em>m+1</em>)</p>
+
+<p>arguments:</p>
 
 <ul>
-<li>Adjacency matrix, node attributes, edge attributes
-returns:</li>
-<li>
-<em>psi size(nxnxm)</em>
-### FeaturesToEdgeStrength.m:
-This function takes the feature matrix (_psi_) and the parameter vector (_w_) as arguments to return edge strength (_A_) and partial derivative of edge strength wrt to each parameter(_dA_). We also compute partial derivative of edge strength to make further calculations easier. We can vary edge strength function in future implementations, in this we used <em>sigmod(w x psi<sub>uv</sub>)</em> as edge strength function.
-arguments:</li>
+<li>Adjacency matrix, node attributes, edge attributes</li>
+</ul><p>returns:</p>
+
+<ul>
 <li><em>psi size(nxnxm)</em></li>
-<li>
-<em>w size(1xm)</em>
-returns:</li>
-<li><em>A size(nxn)</em></li>
-<li>
-<em>dA size(nxnxm)</em>
-### EdgeStrengthToTransitionProbability.m
-This function takes the edge strength matrix <em>A</em> and <em>alpha</em> to compute transition probability matrix <em>Q</em>.
-arguments:</li>
-<li><em>A size(nxn)</em></li>
-<li>
-<em>alpha size(1x1)</em>
-returns:</li>
-<li>
-<em>Q size(nxn)</em>
-### EdgeStrengthToPartialdiffTransition.m
-This function computes partial derivative of transition probability matrix from <em>A</em>, <em>dA</em> and <em>alpha</em>
-arguments:</li>
+</ul><h3>FeaturesToEdgeStrength.m:</h3>
+
+<p>This function takes the feature matrix (_psi_) and the parameter vector (_w_) as arguments to return edge strength (_A_) and partial derivative of edge strength wrt to each parameter(_dA_). We also compute partial derivative of edge strength to make further calculations easier. We can vary edge strength function in future implementations, in this we used <em>sigmod(w x psi<sub>uv</sub>)</em> as edge strength function.</p>
+
+<p>arguments:</p>
+
+<ul>
+<li><em>psi size(nxnxm)</em></li>
+<li><em>w size(1xm)</em></li>
+</ul><p>returns:</p>
+
+<ul>
 <li><em>A size(nxn)</em></li>
 <li><em>dA size(nxnxm)</em></li>
-<li>
-<em>alpha size(1x1)</em>
-returns:</li>
-<li>
-<em>dQ(nxnxm)</em>
-### LossFunction.m
-This function takes as input parameters, adjacency matrix of the network, lambda and alpha.</li>
+</ul><h3>EdgeStrengthToTransitionProbability.m</h3>
+
+<p>This function takes the edge strength matrix <em>A</em> and <em>alpha</em> to compute transition probability matrix <em>Q</em>.</p>
+
+<p>arguments:</p>
+
+<ul>
+<li><em>A size(nxn)</em></li>
+<li><em>alpha size(1x1)</em></li>
+</ul><p>returns:</p>
+
+<ul>
+<li><em>Q size(nxn)</em></li>
+</ul><h3>EdgeStrengthToPartialdiffTransition.m</h3>
+
+<p>This function computes partial derivative of transition probability matrix from <em>A</em>, <em>dA</em> and <em>alpha</em></p>
+
+<p>arguments:</p>
+
+<ul>
+<li><em>A size(nxn)</em></li>
+<li><em>dA size(nxnxm)</em></li>
+<li><em>alpha size(1x1)</em></li>
+</ul><p>returns:</p>
+
+<ul>
+<li><em>dQ size(nxnxm)</em></li>
+</ul><h3>LossFunction.m</h3>
+
+<p>This function takes as input parameters, adjacency matrix of the network, lambda and alpha.</p>
+
+<ul>
 <li>We get edge strength matrix and its partial derivatives from features and parameters</li>
 <li>We get transition probability and partial derivatives of it from A and dA</li>
 <li>We get stationary probabilities from <em>Q</em> and <em>dQ</em>
@@ -138,8 +155,10 @@ This function takes as input parameters, adjacency matrix of the network, lambda
 <li>features: features of all the edges in the network, size(n,n,m)</li>
 <li>d: binary vector representing destination nodes, size(1,n)</li>
 <li>lambda: regularization parameter, size(1,1)</li>
-<li>alpha: random restart parameter, size(1,1)
-returns:</li>
+<li>alpha: random restart parameter, size(1,1)</li>
+</ul><p>returns:</p>
+
+<ul>
 <li>J: loss, size(1,1)</li>
 <li>grad: gradient of cost wrt parameters, size(1,m)</li>
 </ul>
