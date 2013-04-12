@@ -49,7 +49,12 @@ attribute data.</p>
 <h2>The optimization problem:</h2>
 
 <p>The training data contains information that source node <em>s</em> will create edges to node <em>d subset D</em> and not <em>l subset L</em>. So we set parameters <em>w</em> of the function <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> so that it will assign edge weights <em>a<sub>uv</sub></em> in such a way that the random walk will be more likely to visit nodes in <em>D</em> than <em>L</em>, <em>i.e.,</em> <em>p<sub>l</sub> &lt; p<sub>d</sub></em> for each <em>d subset D</em> and <em>l subset L</em>. And thus we define the optimization problem as follows.
-<img src="http://i.imgur.com/zMjJ1Nb.png" alt="optimization problem hard version"></p>
+<img src="http://i.imgur.com/zMjJ1Nb.png" alt="optimization problem hard version">
+where <em>p</em> is the vector of pagerank scores. Pagerank scores <em>p<sub>i</sub></em> depend on edge strength on <em>a<sub>uv</sub></em> and thus actually depend on <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> which is parameterized by <em>w</em>. The above equation (1) simply states that we want to find <em>w</em> such that the pagerank score of nodes in <em>D</em> will be greater than the scores of nodes in <em>L</em>. We prefer the shortest <em>w</em> parameters simply for the sake of regularization. But the above equation is the "hard" version of the optimization problem. However it is unlikely that a solution satisfying all the constraints exist. We make the optimization problem "soft" by introducing a loss function that penalizes the violated constraints. Now the optimization problem becomes,
+<img src="http://i.imgur.com/oZ2pYN1.png" alt="optimization problem soft version.">
+where lambda is the regularization parameter that trades off between the complexity(norm of <em>w</em>) for the fit of the model(how much the constraints can be violated). And <em>h(.)</em> is a loss function that assigns a non-negative penalty according to the difference of the scores <em>p<sub>l</sub>-p<sub>d</sub></em>. <em>h(.) = 0</em> if <em>p<sub>l</sub> &lt; p<sub>d</sub></em> as the constraint is not violated and <em>h(.) &gt; 0</em> if <em>p<sub>l</sub> &gt; p<sub>d</sub></em></p>
+
+<h3>Solving the optimization problem:</h3>
 
 <h1>My Implementation:</h1>
 
