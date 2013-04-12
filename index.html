@@ -1,36 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Link Prediction (Supervised Random Walks) : Predicting and recommending links in a Social Network." />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Link Prediction (Supervised Random Walks) by syllogismos</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Link Prediction (Supervised Random Walks)</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>Link Prediction (Supervised Random Walks)</h1>
+        <p>Predicting and recommending links in a Social Network.</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/syllogismos/facebook-link-prediction">View on GitHub</a>
+        <p class="view"><a href="https://github.com/syllogismos/facebook-link-prediction">View the Project on GitHub <small>syllogismos/facebook-link-prediction</small></a></p>
 
-          <h1 id="project_title">Link Prediction (Supervised Random Walks)</h1>
-          <h2 id="project_tagline">Predicting and recommending links in a Social Network.</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/syllogismos/facebook-link-prediction/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/syllogismos/facebook-link-prediction/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/syllogismos/facebook-link-prediction/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/syllogismos/facebook-link-prediction/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/syllogismos/facebook-link-prediction">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>Link Prediction:</h1>
 
 <p>We are given snapshot of a network and would like to infer which which interactions among existing
@@ -45,19 +42,25 @@ attribute data.</p>
 
 <p>We are given a directed graph <em>G(V,E)</em>, a node <em>s</em> and a set of candidates to which <em>s</em> could create an edge. We label nodes to which <em>s</em> creates edges in the future as <em>destination nodes D = {d<sub>1</sub>,..,d<sub>k</sub>}</em>, while we call the other nodes to which s does not create edges no-link nodes <em>L = {l<sub>1</sub>,..,l<sub>n</sub>}</em>. We label candidate nodes with a set <em>C = D union L</em>. <em>D</em> are positive training examples and <em>L</em> are negative training examples. We can generalize this to multiple instances of <em>s, D, L</em>. Each node and each edge in G is further described with a set of features. We assume that each edge <em>(u,v)</em> has a corresponding feature vector psi<sub>uv</sub> that describes u and v and the interaction attributes.</p>
 
-<h1>Our Implementation:</h1>
-      </section>
-    </div>
+<p>For each edge (u,v) in G we compute the strength <em>a<sub>uv</sub> = f<sub>w</sub>(psi<sub>uv</sub>)</em>. Function <em>f<sub>w</sub></em> parameterized by <em>w</em> takes the edge feature vector <em>psi<sub>uv</sub></em> as input and computes the corresponding edge strength <em>a<sub>uv</sub></em> that models the random walk transition probability. It is exactly the function <em>f<sub>w</sub>(psi)</em> we learn in the training phase of the algorithm.</p>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Link Prediction (Supervised Random Walks) maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+<p>To predict new edges to <em>s</em>, first edge strengths of all edges are calculated using <em>f<sub>w</sub></em>. Then random walk with restarts is run from <em>s</em>. The stationary distribution <em>p</em> of random walk assigns each node <em>u</em> a probability <em>p<sub>u</sub></em>. Nodes are ordered by <em>p<sub>u</sub></em> and top ranked nodes are predicted as future destination nodes to <em>s</em>. The task is to learn the parameters <em>w</em> of function <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> that assigns each edge a transition probability. One can think of the weights <em>a<sub>uv</sub></em> as edge strengths and the random walk is more likely to traverse edges of high strength and thus nodes connected to node <em>s</em> via paths of strong edges will likely to be visited by the random walk and will thus rank higher.</p>
+
+<h2>The optimization problem:</h2>
+
+<p>The training data contains information that source node <em>s</em> will create edges to node <em>d subset D</em> and not <em>l subset L</em>. So we set parameters <em>w</em> of the function <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> so that it will assign edge weights <em>a<sub>uv</sub></em> in such a way that the random walk will be more likely to visit nodes in <em>D</em> than <em>L</em>, <em>i.e.,</em> <em>p<sub>l</sub> &lt; p<sub>d</sub></em> for each <em>d subset D</em> and <em>l subset L</em>. And thus we define the optimization problem as follows.
+<img src="http://i.imgur.com/zMjJ1Nb.png" alt="optimization problem hard version"></p>
+
+<h1>My Implementation:</h1>
+
+<p><a href="http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t">http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
