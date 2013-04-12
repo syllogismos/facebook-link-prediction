@@ -56,10 +56,31 @@ where lambda is the regularization parameter that trades off between the complex
 
 <h3>Solving the optimization problem:</h3>
 
+<p>First we need to establish connection between the parameters <em>w</em> and the random walk scores <em>p</em>. Then we show how to obtain partial derivatives of the loss function and <em>p</em> with respect to <em>w</em> and then perform gradient descent to obtain optimal values of <em>w</em> and minimize loss.
+We build a random walk stochastic transition matrix <em>Q<sup>'</sup></em> from the edge strengths <em>a<sub>uv</sub></em> calculated from <em>f<sub>w</sub>(psi<sub>uv</sub>)</em>.
+<img src="http://i.imgur.com/JiSHf7t.png" alt="Q dash">
+To obtain the final random walk transition probability matrix <em>Q</em>, we also incorporate the restart probability <em>alpha</em>, <em>i.e.,</em> the probability with which the random walk jumps back to seed node <em>s</em>, and thus "restarts".
+<img src="http://i.imgur.com/vE2P7LJ.png" alt="Q">
+each entry <em>Q<sub>uv</sub></em> deﬁnes the conditional probability that a walk will traverse edge (u, v) given that it is currently at node u.
+The vector <em>p</em> is the stationary distribution of the Random Walk with restarts(also known as Personalized Page Rank), and is the solution to the following eigen vector equation.
+<img src="http://i.imgur.com/UFwnobA.png" alt="eigen vector equation">
+The above equation establishes the connection between page rank scores <em>p</em> and the parameters <em>w</em> via the random walk transition probability matrix <em>Q</em>. Our goal now is to minimize the soft version of the loss function(eq. 2) with respect to parameter vector <em>w</em>. We do this by obtaining the gradient of <em>F(w)</em> with respect to <em>w</em>, and then performing gradient based optimization method to find <em>w</em> that minimize <em>F(w)</em>. This gets complicated due to the fact that equation 4 is recursive. For this we introduce <em>delta<sub>ld</sub> = p<sub>l</sub>-p<sub>d</sub></em> and then we can write the derivative
+<img src="http://i.imgur.com/FhZVZEB.png" alt="delta ld">
+and then we can write the derivative of <em>F(w)</em> as follows
+<img src="http://i.imgur.com/oisE40X.png" alt="lossfunction gradient with delta">
+For commonly used loss functions <em>h(.)</em> it is easy to calculate derivative, but it is not clear how to obtain partial derivatives of <em>p</em> wrt <em>w</em>. <em>p</em> is the principle eigen vector of matrix <em>Q</em>. The above eigen vector equation can also be written as follows.
+<img src="http://i.imgur.com/z00CXm4.png" alt="eigen vector reduced form.">
+and taking the derivatives now gives
+<img src="http://i.imgur.com/FhZVZEB.png" alt="derivative of p recursive form">
+above <em>p<sub>u</sub></em> and its partial derivative are entangled in the equation, however we compute the above values iteratively as follows
+<img src="http://i.imgur.com/YwrBiIq.png" alt="power method to compute p and its partial derivative iteratively.">
+we initialize the vector <em>p</em> as <em>1/|V|</em> and all its derivatives as zeroes before the iteration starts and terminates the recursion till the <em>p</em> and its derivatives converge for an epsilon say <em>10e-12</em>.
+To solve equation 4, we need partial derivative of <em>Q<sub>ju</sub>, this calculation is straight forward. When _(j,u) subset E</em>
+<img src="http://i.imgur.com/aLDlWP4.png" alt="partial derivative of Qju"></p>
+
 <h1>My Implementation:</h1>
 
-<p><a href="http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t">http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t</a>
-<a href="http://i.imgur.com/YwrBiIq.png">http://i.imgur.com/YwrBiIq.png</a></p>
+<p><a href="http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t">http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t</a></p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
