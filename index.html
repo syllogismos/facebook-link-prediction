@@ -75,12 +75,11 @@ and taking the derivatives now gives
 above <em>p<sub>u</sub></em> and its partial derivative are entangled in the equation, however we compute the above values iteratively as follows
 <img src="http://i.imgur.com/YwrBiIq.png" alt="power method to compute p and its partial derivative iteratively.">
 we initialize the vector <em>p</em> as <em>1/|V|</em> and all its derivatives as zeroes before the iteration starts and terminates the recursion till the <em>p</em> and its derivatives converge for an epsilon say <em>10e-12</em>.
-To solve equation 4, we need partial derivative of <em>Q<sub>ju</sub>, this calculation is straight forward. When _(j,u) subset E</em>
-<img src="http://i.imgur.com/aLDlWP4.png" alt="partial derivative of Qju"></p>
+To solve equation 4, we need partial derivative of <em>Q<sub>ju</sub></em>, this calculation is straight forward. When <em>(j,u) subset E</em>
+<img src="http://i.imgur.com/aLDlWP4.png" alt="partial derivative of Qju">
+and derivative of <em>Q<sub>ju</sub></em> is zero if edge <em>(j,u)</em> is not a subset of <em>E</em>.</p>
 
 <h1>My Implementation:</h1>
-
-<p><a href="http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t">http://imgur.com/FhZVZEB,oisE40X,aLDlWP4,z00CXm4,zMjJ1Nb,oZ2pYN1,UFwnobA,vE2P7LJ,JiSHf7t</a></p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
