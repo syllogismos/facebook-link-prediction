@@ -1,35 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Link Prediction (Supervised Random Walks) by syllogismos</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Link Prediction (Supervised Random Walks) : Predicting and recommending links in a Social Network." />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Link Prediction (Supervised Random Walks)</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">Link Prediction (Supervised Random Walks)</h1>
-        <p class="header">Predicting and recommending links in a Social Network.</p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/syllogismos/facebook-link-prediction/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/syllogismos/facebook-link-prediction/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/syllogismos/facebook-link-prediction">View On GitHub</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/syllogismos/facebook-link-prediction">View on GitHub</a>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/syllogismos">syllogismos</a></p>
+          <h1 id="project_title">Link Prediction (Supervised Random Walks)</h1>
+          <h2 id="project_tagline">Predicting and recommending links in a Social Network.</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/syllogismos/facebook-link-prediction/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/syllogismos/facebook-link-prediction/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>Link Prediction:</h1>
 
 <p>We are given snapshot of a network and would like to infer which which interactions among existing
@@ -39,12 +40,24 @@ attribute data.</p>
 <h1>Supervised Random Walks:</h1>
 
 <p>This repository is the implementation of Link prediction based on the paper Supervised Random Walks by  Lars Backstrom et al. The essence of which is that we combine the information from the network structure with the node and edge level attributes using Supervised Random Walks. We achieve this by using these attributes to guide a random walk on the graph. We formulate a supervised learning task where the goal is to learn a function that assigns strengths to edges in the network such that a random walker is more likely to visit the nodes to which new links will be created in the future. We develop an efficient training algorithm to directly learn the edge strength estimation function.</p>
+
+<h1>Problem Description:</h1>
+
+<p>We are given a directed graph <em>G(V,E)</em>, a node <em>s</em> and a set of candidates to which <em>s</em> could create an edge. We label nodes to which <em>s</em> creates edges in the future as <em>destination nodes D = {d<sub>1</sub>,..,d<sub>k</sub>}</em>, while we call the other nodes to which s does not create edges no-link nodes <em>L = {l<sub>1</sub>,..,l<sub>n</sub>}</em>. We label candidate nodes with a set <em>C = D union L</em>. <em>D</em> are positive training examples and <em>L</em> are negative training examples. We can generalize this to multiple instances of <em>s, D, L</em>. Each node and each edge in G is further described with a set of features. We assume that each edge <em>(u,v)</em> has a corresponding feature vector psi<sub>uv</sub> that describes u and v and the interaction attributes.</p>
+
+<h1>Our Implementation:</h1>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Link Prediction (Supervised Random Walks) maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+    
+
   </body>
 </html>
