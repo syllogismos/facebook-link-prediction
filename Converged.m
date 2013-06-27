@@ -1,6 +1,6 @@
 % 
 % this function takes two arrays and retuns 1 if both the arrays are same 
-% with in an given error margin.. error margin dependent on requrement..
+% with in an given error margin..
 % 
 
 function ret = Converged(p1,p2,eps)

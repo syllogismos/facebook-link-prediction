@@ -38,7 +38,7 @@ function [P, dP] = ComputeStationaryP(Q, dQ)
   	until (Converged(P, temp, epsilon) || t>100)
   	
 
-  	printf("computestationaryp.m calculating dP\n"); % computing stationary p. 
+  	printf("computestationaryp.m calculating dP\n");
   	for j = 1:m
   	        k = 0;
   	        dQj = dQ(:,:,j);
