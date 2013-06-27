@@ -18,12 +18,12 @@ n = length(P);
 a = repmat(P',1,n);
 b = repmat(P,n,1);
 
-dd = a - b;
+dd = a - b; % difference matrix
 
 dd(find(d),:) = 0; dd(:,find(d==0)) = 0;
 dd(1,:) = 0; dd(:,1) = 0;
 [i,j] = find(dd>0);
-I = [i,j];
+I = [i,j]; % pairs of nodes.
 
 
 end
