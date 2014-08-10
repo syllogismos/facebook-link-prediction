@@ -1,44 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Link Prediction (Supervised Random Walks) by syllogismos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <title>Link Prediction (Supervised Random Walks) by syllogismos</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
+    <header>
+      <div class="inner">
         <h1>Link Prediction (Supervised Random Walks)</h1>
-        <p>Predicting and recommending links in a Social Network.</p>
+        <h2>Predicting and recommending links in a Social Network.</h2>
+        <a href="https://github.com/syllogismos/facebook-link-prediction" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-        <p class="view"><a href="https://github.com/syllogismos/facebook-link-prediction">View the Project on GitHub <small>syllogismos/facebook-link-prediction</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/syllogismos/facebook-link-prediction/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/syllogismos/facebook-link-prediction/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/syllogismos/facebook-link-prediction">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>Link Prediction:</h1>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="link-prediction" class="anchor" href="#link-prediction"><span class="octicon octicon-link"></span></a>Link Prediction:</h2>
 
 <p>We are given snapshot of a network and would like to infer which which interactions among existing
 members are likely to occur in the near future or which existing interactions are we missing. The challenge is to effectively combine the information from the network structure with rich node and edge
 attribute data.</p>
 
-<h1>Supervised Random Walks:</h1>
+<h2>
+<a name="supervised-random-walks" class="anchor" href="#supervised-random-walks"><span class="octicon octicon-link"></span></a>Supervised Random Walks:</h2>
 
 <p>This repository is the implementation of Link prediction based on the paper Supervised Random Walks by  Lars Backstrom et al. The essence of which is that we combine the information from the network structure with the node and edge level attributes using Supervised Random Walks. We achieve this by using these attributes to guide a random walk on the graph. We formulate a supervised learning task where the goal is to learn a function that assigns strengths to edges in the network such that a random walker is more likely to visit the nodes to which new links will be created in the future. We develop an efficient training algorithm to directly learn the edge strength estimation function.</p>
 
-<h1>Problem Description:</h1>
+<h2>
+<a name="problem-description" class="anchor" href="#problem-description"><span class="octicon octicon-link"></span></a>Problem Description:</h2>
 
 <p>We are given a directed graph <em>G(V,E)</em>, a node <em>s</em> and a set of candidates to which <em>s</em> could create an edge. We label nodes to which <em>s</em> creates edges in the future as <em>destination nodes D = {d<sub>1</sub>,..,d<sub>k</sub>}</em>, while we call the other nodes to which s does not create edges no-link nodes <em>L = {l<sub>1</sub>,..,l<sub>n</sub>}</em>. We label candidate nodes with a set <em>C = D union L</em>. <em>D</em> are positive training examples and <em>L</em> are negative training examples. We can generalize this to multiple instances of <em>s, D, L</em>. Each node and each edge in G is further described with a set of features. We assume that each edge <em>(u,v)</em> has a corresponding feature vector psi<sub>uv</sub> that describes u and v and the interaction attributes.</p>
 
@@ -46,98 +49,127 @@ attribute data.</p>
 
 <p>To predict new edges to <em>s</em>, first edge strengths of all edges are calculated using <em>f<sub>w</sub></em>. Then random walk with restarts is run from <em>s</em>. The stationary distribution <em>p</em> of random walk assigns each node <em>u</em> a probability <em>p<sub>u</sub></em>. Nodes are ordered by <em>p<sub>u</sub></em> and top ranked nodes are predicted as future destination nodes to <em>s</em>. The task is to learn the parameters <em>w</em> of function <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> that assigns each edge a transition probability. One can think of the weights <em>a<sub>uv</sub></em> as edge strengths and the random walk is more likely to traverse edges of high strength and thus nodes connected to node <em>s</em> via paths of strong edges will likely to be visited by the random walk and will thus rank higher.</p>
 
-<h2>The optimization problem:</h2>
+<h3>
+<a name="the-optimization-problem" class="anchor" href="#the-optimization-problem"><span class="octicon octicon-link"></span></a>The optimization problem:</h3>
 
-<p>The training data contains information that source node <em>s</em> will create edges to node <em>d subset D</em> and not <em>l subset L</em>. So we set parameters <em>w</em> of the function <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> so that it will assign edge weights <em>a<sub>uv</sub></em> in such a way that the random walk will be more likely to visit nodes in <em>D</em> than <em>L</em>, <em>i.e.,</em> <em>p<sub>l</sub> &lt; p<sub>d</sub></em> for each <em>d subset D</em> and <em>l subset L</em>. And thus we define the optimization problem as follows.
-<img src="http://i.imgur.com/zMjJ1Nb.png" alt="optimization problem hard version">
-where <em>p</em> is the vector of pagerank scores. Pagerank scores <em>p<sub>i</sub></em> depend on edge strength on <em>a<sub>uv</sub></em> and thus actually depend on <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> which is parameterized by <em>w</em>. The above equation (1) simply states that we want to find <em>w</em> such that the pagerank score of nodes in <em>D</em> will be greater than the scores of nodes in <em>L</em>. We prefer the shortest <em>w</em> parameters simply for the sake of regularization. But the above equation is the "hard" version of the optimization problem. However it is unlikely that a solution satisfying all the constraints exist. We make the optimization problem "soft" by introducing a loss function that penalizes the violated constraints. Now the optimization problem becomes,
-<img src="http://i.imgur.com/oZ2pYN1.png" alt="optimization problem soft version.">
+<p>The training data contains information that source node <em>s</em> will create edges to node <em>d subset D</em> and not <em>l subset L</em>. So we set parameters <em>w</em> of the function <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> so that it will assign edge weights <em>a<sub>uv</sub></em> in such a way that the random walk will be more likely to visit nodes in <em>D</em> than <em>L</em>, <em>i.e.,</em> <em>p<sub>l</sub> &lt; p<sub>d</sub></em> for each <em>d subset D</em> and <em>l subset L</em>. And thus we define the optimization problem as follows.<br><img src="http://i.imgur.com/zMjJ1Nb.png" alt="optimization problem hard version"></p>
+
+<p>where <em>p</em> is the vector of pagerank scores. Pagerank scores <em>p<sub>i</sub></em> depend on edge strength on <em>a<sub>uv</sub></em> and thus actually depend on <em>f<sub>w</sub>(psi<sub>uv</sub>)</em> which is parameterized by <em>w</em>. The above equation (1) simply states that we want to find <em>w</em> such that the pagerank score of nodes in <em>D</em> will be greater than the scores of nodes in <em>L</em>. We prefer the shortest <em>w</em> parameters simply for the sake of regularization. But the above equation is the "hard" version of the optimization problem. However it is unlikely that a solution satisfying all the constraints exist. We make the optimization problem "soft" by introducing a loss function that penalizes the violated constraints. Now the optimization problem becomes,<br><img src="http://i.imgur.com/oZ2pYN1.png" alt="optimization problem soft version."><br>
 where lambda is the regularization parameter that trades off between the complexity(norm of <em>w</em>) for the fit of the model(how much the constraints can be violated). And <em>h(.)</em> is a loss function that assigns a non-negative penalty according to the difference of the scores <em>p<sub>l</sub>-p<sub>d</sub></em>. <em>h(.) = 0</em> if <em>p<sub>l</sub> &lt; p<sub>d</sub></em> as the constraint is not violated and <em>h(.) &gt; 0</em> if <em>p<sub>l</sub> &gt; p<sub>d</sub></em></p>
 
-<h3>Solving the optimization problem:</h3>
+<h3>
+<a name="solving-the-optimization-problem" class="anchor" href="#solving-the-optimization-problem"><span class="octicon octicon-link"></span></a>Solving the optimization problem:</h3>
 
 <p>First we need to establish connection between the parameters <em>w</em> and the random walk scores <em>p</em>. Then we show how to obtain partial derivatives of the loss function and <em>p</em> with respect to <em>w</em> and then perform gradient descent to obtain optimal values of <em>w</em> and minimize loss.
-We build a random walk stochastic transition matrix <em>Q<sup>'</sup></em> from the edge strengths <em>a<sub>uv</sub></em> calculated from <em>f<sub>w</sub>(psi<sub>uv</sub>)</em>.
-<img src="http://i.imgur.com/JiSHf7t.png" alt="Q dash">
-To obtain the final random walk transition probability matrix <em>Q</em>, we also incorporate the restart probability <em>alpha</em>, <em>i.e.,</em> the probability with which the random walk jumps back to seed node <em>s</em>, and thus "restarts".
-<img src="http://i.imgur.com/vE2P7LJ.png" alt="Q">
-each entry <em>Q<sub>uv</sub></em> deﬁnes the conditional probability that a walk will traverse edge (u, v) given that it is currently at node u.
-The vector <em>p</em> is the stationary distribution of the Random Walk with restarts(also known as Personalized Page Rank), and is the solution to the following eigen vector equation.
-<img src="http://i.imgur.com/UFwnobA.png" alt="eigen vector equation">
-The above equation establishes the connection between page rank scores <em>p</em> and the parameters <em>w</em> via the random walk transition probability matrix <em>Q</em>. Our goal now is to minimize the soft version of the loss function(eq. 2) with respect to parameter vector <em>w</em>. We do this by obtaining the gradient of <em>F(w)</em> with respect to <em>w</em>, and then performing gradient based optimization method to find <em>w</em> that minimize <em>F(w)</em>. This gets complicated due to the fact that equation 4 is recursive. For this we introduce <em>delta<sub>ld</sub> = p<sub>l</sub>-p<sub>d</sub></em> and then we can write the derivative
-<img src="http://i.imgur.com/FhZVZEB.png" alt="delta ld">
-and then we can write the derivative of <em>F(w)</em> as follows
-<img src="http://i.imgur.com/oisE40X.png" alt="lossfunction gradient with delta">
-For commonly used loss functions <em>h(.)</em> it is easy to calculate derivative, but it is not clear how to obtain partial derivatives of <em>p</em> wrt <em>w</em>. <em>p</em> is the principle eigen vector of matrix <em>Q</em>. The above eigen vector equation can also be written as follows.
-<img src="http://i.imgur.com/z00CXm4.png" alt="eigen vector reduced form.">
-and taking the derivatives now gives
-<img src="http://i.imgur.com/FhZVZEB.png" alt="derivative of p recursive form">
-above <em>p<sub>u</sub></em> and its partial derivative are entangled in the equation, however we compute the above values iteratively as follows
-<img src="http://i.imgur.com/YwrBiIq.png" alt="power method to compute p and its partial derivative iteratively.">
+We build a random walk stochastic transition matrix <em>Q<sup>'</sup></em> from the edge strengths <em>a<sub>uv</sub></em> calculated from <em>f<sub>w</sub>(psi<sub>uv</sub>)</em>.<br><img src="http://i.imgur.com/JiSHf7t.png" alt="Q dash"></p>
+
+<p>To obtain the final random walk transition probability matrix <em>Q</em>, we also incorporate the restart probability <em>alpha</em>, <em>i.e.,</em> the probability with which the random walk jumps back to seed node <em>s</em>, and thus "restarts".<br><img src="http://i.imgur.com/vE2P7LJ.png" alt="Q"></p>
+
+<p>each entry <em>Q<sub>uv</sub></em> deﬁnes the conditional probability that a walk will traverse edge (u, v) given that it is currently at node u.
+The vector <em>p</em> is the stationary distribution of the Random Walk with restarts(also known as Personalized Page Rank), and is the solution to the following eigen vector equation.<br><img src="http://i.imgur.com/UFwnobA.png" alt="eigen vector equation"></p>
+
+<p>The above equation establishes the connection between page rank scores <em>p</em> and the parameters <em>w</em> via the random walk transition probability matrix <em>Q</em>. Our goal now is to minimize the soft version of the loss function(eq. 2) with respect to parameter vector <em>w</em>. We do this by obtaining the gradient of <em>F(w)</em> with respect to <em>w</em>, and then performing gradient based optimization method to find <em>w</em> that minimize <em>F(w)</em>. This gets complicated due to the fact that equation 4 is recursive. For this we introduce <em>delta<sub>ld</sub> = p<sub>l</sub>-p<sub>d</sub></em> and then we can write the derivative<br><img src="http://i.imgur.com/FhZVZEB.png" alt="delta ld"><br>
+and then we can write the derivative of <em>F(w)</em> as follows<br><img src="http://i.imgur.com/oisE40X.png" alt="lossfunction gradient with delta"><br>
+For commonly used loss functions <em>h(.)</em> it is easy to calculate derivative, but it is not clear how to obtain partial derivatives of <em>p</em> wrt <em>w</em>. <em>p</em> is the principle eigen vector of matrix <em>Q</em>. The above eigen vector equation can also be written as follows.<br><img src="http://i.imgur.com/z00CXm4.png" alt="eigen vector reduced form."><br>
+and taking the derivatives now gives<br><img src="http://i.imgur.com/FhZVZEB.png" alt="derivative of p recursive form"><br>
+above <em>p<sub>u</sub></em> and its partial derivative are entangled in the equation, however we compute the above values iteratively as follows<br><img src="http://i.imgur.com/WneoOOn.png" alt="power method to compute p and its partial derivative iteratively."><br>
 we initialize the vector <em>p</em> as <em>1/|V|</em> and all its derivatives as zeroes before the iteration starts and terminates the recursion till the <em>p</em> and its derivatives converge for an epsilon say <em>10e-12</em>.
-To solve equation 4, we need partial derivative of <em>Q<sub>ju</sub></em>, this calculation is straight forward. When <em>(j,u) subset E</em> derivative of <em>Q<sub>ju</sub></em> is
-<img src="http://i.imgur.com/aLDlWP4.png" alt="partial derivative of Qju">
+To solve equation 4, we need partial derivative of <em>Q<sub>ju</sub></em>, this calculation is straight forward. When <em>(j,u) subset E</em> derivative of <em>Q<sub>ju</sub></em> is<br><img src="http://i.imgur.com/aLDlWP4.png" alt="partial derivative of Qju"><br>
 and derivative of <em>Q<sub>ju</sub></em> is zero if edge <em>(j,u)</em> is not a subset of <em>E</em>.</p>
 
-<h1>My Implementation:</h1>
+<h2>
+<a name="my-implementation" class="anchor" href="#my-implementation"><span class="octicon octicon-link"></span></a>My Implementation:</h2>
 
 <p>We are given a huge network with existing connections. When predicting future link of a particular node, we consider that <em>s</em>, and the graph <em>G(E,V)</em> is 
 Here we explain how each helper function and main functions implements the above algorithm..</p>
 
-<h3>FeaturesFromAdjacentMatrix.m:</h3>
+<h3>
+<a name="featuresfromadjacentmatrixm" class="anchor" href="#featuresfromadjacentmatrixm"><span class="octicon octicon-link"></span></a>FeaturesFromAdjacentMatrix.m:</h3>
 
 <p>This is a temporary function specific to the facebook data that generates Features of each edge from a given adjacency matrix. For other problems this function must be replaced with something that generates feature vector for each edge based on graph <em>G(E,V)</em> and node, edge attributes. For an network with <em>n</em> nodes this function returns <em>n x n x m</em> matrix, where <em>m</em> is the size of parameter vector <em>w</em>(sometimes <em>m+1</em>)</p>
 
+<ul>
+<li>
 <p>arguments:</p>
 
 <ul>
 <li>Adjacency matrix, node attributes, edge attributes</li>
-</ul><p>returns:</p>
+</ul>
+</li>
+<li>
+<p>returns:</p>
 
 <ul>
 <li><em>psi size(nxnxm)</em></li>
-</ul><h3>FeaturesToEdgeStrength.m:</h3>
+</ul>
+</li>
+</ul><h3>
+<a name="featurestoedgestrengthm" class="anchor" href="#featurestoedgestrengthm"><span class="octicon octicon-link"></span></a>FeaturesToEdgeStrength.m:</h3>
 
-<p>This function takes the feature matrix (_psi_) and the parameter vector (_w_) as arguments to return edge strength (_A_) and partial derivative of edge strength wrt to each parameter(_dA_). We also compute partial derivative of edge strength to make further calculations easier. We can vary edge strength function in future implementations, in this we used <em>sigmod(w x psi<sub>uv</sub>)</em> as edge strength function.</p>
+<p>This function takes the feature matrix (<em>psi</em>) and the parameter vector (<em>w</em>) as arguments to return edge strength (<em>A</em>) and partial derivative of edge strength wrt to each parameter(<em>dA</em>). We also compute partial derivative of edge strength to make further calculations easier. We can vary edge strength function in future implementations, in this we used <em>sigmod(w x psi<sub>uv</sub>)</em> as edge strength function.</p>
 
+<ul>
+<li>
 <p>arguments:</p>
 
 <ul>
 <li><em>psi size(nxnxm)</em></li>
 <li><em>w size(1xm)</em></li>
-</ul><p>returns:</p>
+</ul>
+</li>
+<li>
+<p>returns:</p>
 
 <ul>
 <li><em>A size(nxn)</em></li>
 <li><em>dA size(nxnxm)</em></li>
-</ul><h3>EdgeStrengthToTransitionProbability.m</h3>
+</ul>
+</li>
+</ul><h3>
+<a name="edgestrengthtotransitionprobabilitym" class="anchor" href="#edgestrengthtotransitionprobabilitym"><span class="octicon octicon-link"></span></a>EdgeStrengthToTransitionProbability.m</h3>
 
 <p>This function takes the edge strength matrix <em>A</em> and <em>alpha</em> to compute transition probability matrix <em>Q</em>.</p>
 
+<ul>
+<li>
 <p>arguments:</p>
 
 <ul>
 <li><em>A size(nxn)</em></li>
 <li><em>alpha size(1x1)</em></li>
-</ul><p>returns:</p>
+</ul>
+</li>
+<li>
+<p>returns:</p>
 
 <ul>
 <li><em>Q size(nxn)</em></li>
-</ul><h3>EdgeStrengthToPartialdiffTransition.m</h3>
+</ul>
+</li>
+</ul><h3>
+<a name="edgestrengthtopartialdifftransitionm" class="anchor" href="#edgestrengthtopartialdifftransitionm"><span class="octicon octicon-link"></span></a>EdgeStrengthToPartialdiffTransition.m</h3>
 
 <p>This function computes partial derivative of transition probability matrix from <em>A</em>, <em>dA</em> and <em>alpha</em></p>
 
+<ul>
+<li>
 <p>arguments:</p>
 
 <ul>
 <li><em>A size(nxn)</em></li>
 <li><em>dA size(nxnxm)</em></li>
 <li><em>alpha size(1x1)</em></li>
-</ul><p>returns:</p>
+</ul>
+</li>
+<li>
+<p>returns:</p>
 
 <ul>
 <li><em>dQ size(nxnxm)</em></li>
-</ul><h3>LossFunction.m</h3>
+</ul>
+</li>
+</ul><h3>
+<a name="lossfunctionm" class="anchor" href="#lossfunctionm"><span class="octicon octicon-link"></span></a>LossFunction.m</h3>
 
 <p>This function takes as input parameters, adjacency matrix of the network, lambda and alpha.</p>
 
@@ -147,8 +179,9 @@ Here we explain how each helper function and main functions implements the above
 </li>
 <li>We get stationary probabilities from <em>Q</em> and <em>dQ</em>
 </li>
-<li>Compute cost and gradient from the above variables, we can use various functions as loss function <em>h(.)</em>. Here we used wilcoxon loss function.</li>
-</ul><p>arguments:</p>
+<li><p>Compute cost and gradient from the above variables, we can use various functions as loss function <em>h(.)</em>. Here we used wilcoxon loss function.</p></li>
+<li>
+<p>arguments:</p>
 
 <ul>
 <li>param: parameters of the edge strength function, size(1,m)</li>
@@ -156,19 +189,28 @@ Here we explain how each helper function and main functions implements the above
 <li>d: binary vector representing destination nodes, size(1,n)</li>
 <li>lambda: regularization parameter, size(1,1)</li>
 <li>alpha: random restart parameter, size(1,1)</li>
-</ul><p>returns:</p>
+</ul>
+</li>
+<li>
+<p>returns:</p>
 
 <ul>
 <li>J: loss, size(1,1)</li>
 <li>grad: gradient of cost wrt parameters, size(1,m)</li>
-</ul><h3>fmincg.m</h3>
+</ul>
+</li>
+</ul><h3>
+<a name="fmincgm" class="anchor" href="#fmincgm"><span class="octicon octicon-link"></span></a>fmincg.m</h3>
 
 <p>We use this function to do the minimization of the loss function, given a starting point for the parameters, and the function that computes loss and gradients for a given parameter vector. This is similar to fminunc function available in octave.</p>
 
-<h3>GetNodesFromParam.m</h3>
+<h3>
+<a name="getnodesfromparamm" class="anchor" href="#getnodesfromparamm"><span class="octicon octicon-link"></span></a>GetNodesFromParam.m</h3>
 
 <p>This function calculates the closest nodes to the root node given the parameters obtained after training.</p>
 
+<ul>
+<li>
 <p>arguments:</p>
 
 <ul>
@@ -177,12 +219,18 @@ Here we explain how each helper function and main functions implements the above
 <li>d: binary vector representing the destination nodes, size(1,n)</li>
 <li>alpha: alpha value used in calculation of Q, size(1,1)</li>
 <li>y: number of nodes to output</li>
-</ul><p>returns:</p>
+</ul>
+</li>
+<li>
+<p>returns:</p>
 
 <ul>
 <li>nodes: output nodes, size(1,y)</li>
 <li>P: probabilities of the nodes, size(1,n)</li>
-</ul><h1>How to Train:</h1>
+</ul>
+</li>
+</ul><h2>
+<a name="how-to-train" class="anchor" href="#how-to-train"><span class="octicon octicon-link"></span></a>How to Train:</h2>
 
 <p>Here I will show how to train the supervised random walk for a given root node <em>s</em> and edge features matrix <em>psi</em>.
 I'm not showing how to obtain the edge features. Given the network structure, node and edge attributes etc, you can experiment with different feature extraction techniques.
@@ -195,27 +243,44 @@ octave:4&gt; n = size(psi)(1);
 octave:5&gt; initial_w = zeroes(1,m);   % initialize the parameters to zeros or rand
 octave:6&gt; initial_w = rand(1,n);
 
-to calculate the loss for a given parameter vector.
-octave:7&gt; [loss, grad] = LossFunction(initial_w, psi, d, lambda=1, alpha=0.2, b=0.4);
-d above is a binary vector that represents the destination nodes to begin with, you can initialize this randomly or obtain it from the graph
+% to calculate the loss for a given parameter vector.
 
-training
+octave:7&gt; [loss, grad] = LossFunction(initial_w, psi, d, lambda=1, alpha=0.2, b=0.4);
+
+% d above is a binary vector that represents the destination nodes to begin with, 
+% you can initialize this randomly or obtain it from the graph
+
+% training
 octave:8&gt; options = optimset('GradObj', 'on', 'MaxIter', 20);
 octave:9&gt; [w,loss] = ...
     fmincg(@(t)(LossFunction(t, psi, d, lambda=1,alpha=0.2,b=0.4)),
     initial_w, options);
-w obtained above is the parameters we obtained after gradient descent
+
+% w obtained above is the parameters we obtained after gradient descent
+
 octave:10&gt; y = 10;
 octave:11&gt; [nodes, P] = GetNodesFromParam(w, psi,d,alpha = 0.2,y);
 </code></pre>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/syllogismos">syllogismos</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/syllogismos/facebook-link-prediction/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/syllogismos/facebook-link-prediction/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/syllogismos/facebook-link-prediction"></a> is maintained by <a href="https://github.com/syllogismos">syllogismos</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
